@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurumsal Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        /* Gelecekte CSS dosyasına taşınacak alan */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <aside id="sidebar-component" class="bg-slate-800 text-white w-full md:w-64 space-y-6 py-7 px-2 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out shadow-lg">
+            <div class="text-white flex items-center space-x-2 px-4">
+                <span class="text-2xl font-extrabold tracking-tight">Anasayfa</span>
+            </div>
+            <nav class="space-y-1 px-2">
+                <a href="#" class="block py-2.5 px-4 rounded transition duration-200 bg-slate-900 text-white font-semibold">Dashboard</a>
+                <a href="#" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-slate-700 hover:text-white">Kullanıcılar</a>
+                <a href="#" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-slate-700 hover:text-white">Ayarlar</a>
+            </nav>
+        </aside>
+
+        <main class="flex-1 p-6 md:p-10 space-y-6">
+            <header id="header-component" class="flex justify-between items-center bg-white p-4 rounded-xl shadow-xs">
+                <h1 class="text-2xl font-bold text-gray-800">Genel Bakış</h1>
+                <div class="flex items-center space-x-4">
+                    <span id="user-profile" class="text-gray-600 font-medium">Yükleniyor...</span>
+                </div>
+            </header>
+
+            <section id="cards-component" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                </section>
+
+            <section id="table-component" class="bg-white p-6 rounded-xl shadow-xs overflow-hidden">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Son İşlemler</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Müşteri</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body" class="bg-white divide-y divide-gray-200">
+                            </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // GLOBAL STATE (Gelecekte API'den beslenecek)
+        const AppState = {
+            user: { name: "Ahmet Yılmaz", role: "Admin" },
+            stats: [
+                { title: "Toplam Satış", value: "₺24,500", color: "text-green-600" },
+                { title: "Aktif Kullanıcılar", value: "1,240", color: "text-blue-600" },
+                { title: "Bekleyen Talepler", value: "12", color: "text-red-600" }
+            ],
+            recentTransactions: [
+                { id: "#1092", customer: "Mehmet Can", status: "Tamamlandı" },
+                { id: "#1093", customer: "Ayşe Yılmaz", status: "Beklemede" },
+                { id: "#1094", customer: "Ali Demir", status: "İptal Edildi" }
+            ]
+        };
+
+        // COMPONENT RENDERERS
+        function renderHeader() {
+            document.getElementById('user-profile').innerText = `${AppState.user.name} (${AppState.user.role})`;
+        }
+
+        function renderCards() {
+            const container = document.getElementById('cards-component');
+            container.innerHTML = AppState.stats.map(stat => `
+                <div class="bg-white p-6 rounded-xl shadow-xs border-l-4 border-slate-700">
+                    <p class="text-sm font-medium text-gray-500 uppercase">${stat.title}</p>
+                    <p class="text-3xl font-bold ${stat.color} mt-2">${stat.value}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = AppState.recentTransactions.map(tx => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">${tx.id}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${tx.customer}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                            ${tx.status === 'Tamamlandı' ? 'bg-green-100 text-green-800' : tx.status === 'Beklemede' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}">
+                            ${tx.status}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // APP INITIALIZATION
+        function initApp() {
+            renderHeader();
+            renderCards();
+            renderTable();
+        }
+
+        // Sayfa yüklendiğinde çalıştır
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
